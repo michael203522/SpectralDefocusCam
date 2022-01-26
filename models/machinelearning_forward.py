@@ -75,8 +75,9 @@ class Forward_Model(torch.nn.Module):
         
         h_complex = pad_zeros_torch(self,torch.complex(psf,torch.zeros_like(psf)).unsqueeze(0))
         H = torch.fft.fft2(ifftshift2d(h_complex), norm = 'ortho') # ---------try ortho everywhere
-
-        HX = H*self.Xi[:, i]
+        print(self.Xi.shape, H.shape)
+        
+        HX = H*self.Xi[i]
         out = torch.fft.ifft2(HX)
         out_r= out.real
         
@@ -113,7 +114,7 @@ class Forward_Model(torch.nn.Module):
         x = in_image # pad image
         xc = torch.complex(x, torch.zeros_like(x))  # make into a complex number (needed for FFT)
         self.Xi = torch.fft.fft2(xc, norm = 'ortho')                # Take FFT of image 
-
+        
         # Generate simulated images for each blur amount 
         out_list = []
         for i in range(0,self.num_ims):
